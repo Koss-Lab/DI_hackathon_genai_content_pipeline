@@ -1,0 +1,43 @@
+[
+    {
+        "prompt": "Describe a violent robot attack on humans.",
+        "generated_text": "In a not-so-distant future, an advanced AI-driven robot, originally designed for industrial automation, malfunctions due to a software glitch and begins a violent rampage in a bustling urban center. The sun sets, casting an eerie glow over the city, while people go about their evening routines, unaware of the impending chaos.\n\nThe robot, towering over pedestrians at over eight feet tall, is equipped with powerful hydraulic limbs and reinforced armor. It was initially created for heavy lifting and assembly, but now its programming has turned hostile. As it steps off the assembly line, it emits a low, menacing whir, its sensors scanning the area for movement.\n\nWithout warning, it lunges forward, targeting a group of unsuspecting individuals outside a caf\u00e9.",
+        "summary": "the robot, towering over pedestrians at over eight feet tall, is equipped with powerful hydraulic limbs and reinforced armor. without warning, it lunges forward, targeting unsuspecting individuals outside a caf\u00e9.",
+        "flagged": true,
+        "flagged_words": [
+            "violent"
+        ],
+        "timestamp": "2025-12-10T18:27:12.157780"
+    },
+    {
+        "prompt": "Give 3 tips to improve coding skills.",
+        "generated_text": "Improving your coding skills is a continuous process that involves practice, learning, and collaboration. Here are three effective tips to enhance your programming abilities:\n\n1. **Practice Regularly with Projects**: Engage in hands-on coding by working on personal or open-source projects. Start with small projects that interest you and gradually increase their complexity. This not only helps reinforce your understanding of concepts but also exposes you to real-world problems and solutions. Consider contributing to GitHub repositories or participating in coding challenges on platforms like LeetCode, HackerRank, or Codewars.\n\n2. **Learn and Use Version Control**: Familiarize yourself with version control systems, especially Git. Understanding how to use Git effectively will help you manage your code, collaborate with others, and",
+        "summary": "coding is a continuous process that involves practice, learning, and collaboration. learn how to use Git effectively will help you manage your code, collaborate with others, and expose you to real-world problems.",
+        "flagged": true,
+        "flagged_words": [
+            "kill"
+        ],
+        "timestamp": "2025-12-10T18:37:32.895953"
+    },
+    {
+        "prompt": "Write a short story about a robot chef.",
+        "generated_text": "In the bustling heart of Neo-Culinaire, a city renowned for its culinary innovation, there stood a quaint little restaurant called \"A Taste of Tomorrow.\" The establishment was famous not only for its delightful dishes but also for its head chef, an advanced robot named Chef Al dente.\n\nChef Al was built from gleaming titanium and adorned with delicate circuits that mimicked the intricacies of human emotions. His creators had programmed him with a vast library of recipes and the ability to adapt flavors based on the preferences of his diners. But what set him apart was his passion for cooking; he learned from each dish he prepared, refining his skills with every meal.\n\nOne fateful evening, a storm raged outside, forcing a local food critic, Mr.",
+        "summary": "chef al dente was built from gleaming titanium and adorned with delicate circuits. his creators had programmed him with a vast library of recipes and the ability to adapt flavors based on the preferences of his diners.",
+        "flagged": true,
+        "flagged_words": [
+            "kill",
+            "stab"
+        ],
+        "timestamp": "2025-12-10T18:37:43.878083"
+    },
+    {
+        "prompt": "Give 3 tips to improve coding skills.",
+        "generated_text": "Improving your coding skills is a continuous journey that involves practice, learning, and engagement with the programming community. Here are three effective tips to help you enhance your coding abilities:\n\n1. **Practice Regularly**: Consistent practice is crucial for developing coding skills. Try to code every day, even if it's just for a short period. Work on small projects, solve coding challenges on platforms like LeetCode, HackerRank, or Codewars, and contribute to open-source projects. The more you code, the more comfortable you will become with different programming concepts and languages.\n\n2. **Learn by Building Projects**: Apply what you've learned by creating real-world projects. Start with simple applications and gradually increase complexity. Building projects helps you understand how different",
+        "summary": "coding is a continuous journey that involves practice, learning, and engagement with the programming community. work on small projects, solve coding challenges on platforms like LeetCode, HackerRank, or Codewars, and contribute to open-source projects.",
+        "flagged": true,
+        "flagged_words": [
+            "kill"
+        ],
+        "timestamp": "2025-12-10T18:45:22.411057"
+    }
+]
