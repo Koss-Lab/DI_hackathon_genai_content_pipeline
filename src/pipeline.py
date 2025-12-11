@@ -1,10 +1,16 @@
 # src/pipeline.py
 import json
 import datetime
-import pandas as pd   # ← IMPORTANT : on ajoute pandas !
+import pandas as pd
 
 from .api_generator import APIGenerator
-from .summarizer import Summarizer
+
+# Railway can't install transformers -> disable Summarizer cleanly
+try:
+    from .summarizer import Summarizer
+except Exception:
+    Summarizer = None
+
 from .ethical_filter import EthicalFilter
 from .content_filter import ContentFilter
 from .utils import save_json, load_default_prompts
@@ -16,6 +22,9 @@ class ContentPipeline:
         self.filter = ContentFilter()
         self.models_loaded = False
         self.last_results = []
+
+        # Summarizer disabled on Railway
+        self.summarizer = Summarizer() if Summarizer else None
 
     # ---------------------------------------------
     # Save last results to file + memory
