@@ -1,2 +1,1 @@
 worker: python automation/telegram_bot.py
-PYTHONPATH=.
