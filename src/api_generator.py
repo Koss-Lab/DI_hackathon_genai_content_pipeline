@@ -1,32 +1,37 @@
 # src/api_generator.py
 
 import os
-from openai import OpenAI
+import openai
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class APIGenerator:
-    def __init__(self):
-        # Load env vars
+    def __init__(self, model="gpt-4o-mini"):
+        self.model = model
         self.api_key = os.getenv("OPENAI_API_KEY")
-        self.model_name = os.getenv("MODEL_NAME", "gpt-4o-mini")  # FIXED
 
         if not self.api_key:
-            raise ValueError("ERROR: OPENAI_API_KEY not found in .env")
+            raise ValueError("ERROR: OPENAI_API_KEY not found in environment variables")
 
-        # Init OpenAI client (NEW SDK)
-        self.client = OpenAI(api_key=self.api_key)
-
-    def load(self):
-        """API generator doesn't need loading, but pipeline expects this method."""
-        print("[API] No local model to load (OK)")
+        # configure old OpenAI client
+        openai.api_key = self.api_key
 
     def generate(self, prompt: str) -> str:
-        print(f"[API] Generating with model: {self.model_name}")
+        """Generate text using the old OpenAI SDK (0.28.1)."""
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens=500,
+                temperature=0.7,
+            )
 
-        response = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=2000,
-            temperature=0.9
-        )
+            return response["choices"][0]["message"]["content"]
 
-        return response.choices[0].message.content
+        except Exception as e:
+            print(f"[API ERROR] {e}")
+            return f"[API ERROR] {str(e)}"
