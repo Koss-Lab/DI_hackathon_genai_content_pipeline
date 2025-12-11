@@ -4,9 +4,9 @@
 # CLEAN event loop, no asyncio.run issues
 # ============================================================
 from src.pipeline import ContentPipeline
-
 import os
 import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import json
 import datetime
 from dotenv import load_dotenv
