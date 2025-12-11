@@ -1,13 +1,13 @@
 # src/pipeline.py
-
-import os
 import json
 import datetime
-import pandas as pd
-from src.api_generator import APIGenerator
-from src.local_generator import LocalGenerator
-from src.content_filter import ContentFilter
-from src.utils import save_json, load_default_prompts
+import pandas as pd   # ← IMPORTANT : on ajoute pandas !
+
+from .api_generator import APIGenerator
+from .summarizer import Summarizer
+from .ethical_filter import EthicalFilter
+from .content_filter import ContentFilter
+from .utils import save_json, load_default_prompts
 
 
 class ContentPipeline:
@@ -16,21 +16,20 @@ class ContentPipeline:
         self.filter = ContentFilter()
         self.models_loaded = False
         self.last_results = []
+
     # ---------------------------------------------
-    # Helper: save last results to last_results.json
-    # Used by CLI (option 3) and can be reused by bot
+    # Save last results to file + memory
     # ---------------------------------------------
     def save_last_results(self, results):
         try:
             with open("last_results.json", "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=2)
-            # on met aussi à jour l'état en mémoire
             self.last_results = results
         except Exception as e:
             print("[PIPELINE] ERROR saving last results:", e)
 
     # ---------------------------------------------------------
-    # Load models ONCE (API generator + simple filter)
+    # Load models once
     # ---------------------------------------------------------
     def _ensure_models_loaded(self):
         if self.models_loaded:
@@ -39,11 +38,10 @@ class ContentPipeline:
         if self.generator:
             print("[API] No local model to load (OK)")
 
-        # ContentFilter n’a **aucun load()**
         self.models_loaded = True
 
     # ---------------------------------------------------------
-    # Process default prompts
+    # Run default prompts
     # ---------------------------------------------------------
     def run(self):
         self._ensure_models_loaded()
@@ -54,7 +52,6 @@ class ContentPipeline:
         for p in prompts:
             print(f"[PIPELINE] Processing prompt: {p}")
             generated = self.generator.generate(p)
-
             flagged, words = self.filter.check(generated)
 
             result = {
@@ -77,7 +74,7 @@ class ContentPipeline:
         return results
 
     # ---------------------------------------------------------
-    # Process a single user prompt
+    # Process a single prompt
     # ---------------------------------------------------------
     def process_single(self, prompt):
         self._ensure_models_loaded()
@@ -95,14 +92,11 @@ class ContentPipeline:
 
         self.last_results = result
         save_json("last_results.json", result)
-
         return result
 
     # ---------------------------------------------------------
     # Batch CSV processing
     # ---------------------------------------------------------
-
-
     def run_batch_csv(self, csv_path="data/prompts.csv"):
         try:
             df = pd.read_csv(csv_path)
@@ -120,10 +114,14 @@ class ContentPipeline:
             return results
 
         except Exception as e:
-            return [{"prompt": "CSV_ERROR", "generated_text": str(e), "flagged": False}]
+            return [{
+                "prompt": "CSV_ERROR",
+                "generated_text": str(e),
+                "flagged": False
+            }]
 
     # ---------------------------------------------------------
-    # Return last pipeline output
+    # Load last results from JSON
     # ---------------------------------------------------------
     def get_last_results(self, limit=None):
         try:
