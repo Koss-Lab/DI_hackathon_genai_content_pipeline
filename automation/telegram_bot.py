@@ -3,14 +3,30 @@
 # Compatible python-telegram-bot v21.5
 # CLEAN event loop, no asyncio.run issues
 # ============================================================
-from src.pipeline import ContentPipeline
+
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import json
 import datetime
 from dotenv import load_dotenv
 
+# -----------------------------------------------------------
+# Fix Python path so Railway can find /src properly
+# -----------------------------------------------------------
+
+# /automation/telegram_bot.py --> parent = project root
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Add project root to Python path
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
+# Now imports from src will work
+from src.pipeline import ContentPipeline
+
+# -----------------------------------------------------------
+# Telegram imports
+# -----------------------------------------------------------
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -25,6 +41,7 @@ from telegram.ext import (
 # Load .env safely
 # -----------------------------------------------------------
 load_dotenv()
+
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TELEGRAM_BOT_TOKEN:
