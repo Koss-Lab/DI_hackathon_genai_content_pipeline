@@ -1,10 +1,13 @@
 # src/pipeline.py
+
 import os
 import json
 import datetime
-from api_generator import APIGenerator
-from content_filter import ContentFilter
-from utils import load_default_prompts, save_json
+import pandas as pd
+from src.api_generator import APIGenerator
+from src.local_generator import LocalGenerator
+from src.content_filter import ContentFilter
+from src.utils import save_json, load_default_prompts
 
 
 class ContentPipeline:
@@ -13,6 +16,18 @@ class ContentPipeline:
         self.filter = ContentFilter()
         self.models_loaded = False
         self.last_results = []
+    # ---------------------------------------------
+    # Helper: save last results to last_results.json
+    # Used by CLI (option 3) and can be reused by bot
+    # ---------------------------------------------
+    def save_last_results(self, results):
+        try:
+            with open("last_results.json", "w", encoding="utf-8") as f:
+                json.dump(results, f, indent=2)
+            # on met aussi à jour l'état en mémoire
+            self.last_results = results
+        except Exception as e:
+            print("[PIPELINE] ERROR saving last results:", e)
 
     # ---------------------------------------------------------
     # Load models ONCE (API generator + simple filter)
@@ -86,38 +101,39 @@ class ContentPipeline:
     # ---------------------------------------------------------
     # Batch CSV processing
     # ---------------------------------------------------------
+
+
     def run_batch_csv(self, csv_path="data/prompts.csv"):
-        import csv
+        try:
+            df = pd.read_csv(csv_path)
 
-        self._ensure_models_loaded()
+            if "prompt" not in df.columns:
+                raise ValueError("CSV must contain a 'prompt' column")
 
-        results = []
+            prompts = df["prompt"].dropna().tolist()
 
-        with open(csv_path, "r", encoding="utf-8") as f:
-            for row in csv.reader(f):
-                prompt = row[0].strip()
-                generated = self.generator.generate(prompt)
+            results = []
+            for prompt in prompts:
+                results.extend(self.process_single(prompt))
 
-                flagged, words = self.filter.check(generated)
+            self.save_last_results(results)
+            return results
 
-                results.append({
-                    "prompt": prompt,
-                    "generated_text": generated,
-                    "flagged": flagged,
-                    "flagged_words": words,
-                    "timestamp": datetime.datetime.now().isoformat()
-                })
-
-        self.last_results = results
-        save_json("last_results.json", results)
-
-        return results
+        except Exception as e:
+            return [{"prompt": "CSV_ERROR", "generated_text": str(e), "flagged": False}]
 
     # ---------------------------------------------------------
     # Return last pipeline output
     # ---------------------------------------------------------
-    def get_last_results(self):
-        if os.path.exists("last_results.json"):
+    def get_last_results(self, limit=None):
+        try:
             with open("last_results.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-        return None
+                data = json.load(f)
+
+            if limit is not None:
+                return data[-limit:]
+
+            return data
+
+        except FileNotFoundError:
+            return []

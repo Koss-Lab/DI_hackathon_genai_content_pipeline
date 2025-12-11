@@ -6,32 +6,36 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from openai import OpenAI
+
+
 class APIGenerator:
-    def __init__(self, model="gpt-4o-mini"):
-        self.model = model
+    """
+    Universal OpenAI API wrapper
+    Compatible with openai >= 1.0 (2025 standard)
+    Works for CLI, Telegram bot, Railway deployment.
+    """
+
+    def __init__(self):
         self.api_key = os.getenv("OPENAI_API_KEY")
+        self.model = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
         if not self.api_key:
-            raise ValueError("ERROR: OPENAI_API_KEY not found in environment variables")
+            raise ValueError("ERROR: OPENAI_API_KEY not found in environment")
 
-        # configure old OpenAI client
-        openai.api_key = self.api_key
+        self.client = OpenAI(api_key=self.api_key)
 
     def generate(self, prompt: str) -> str:
-        """Generate text using the old OpenAI SDK (0.28.1)."""
+        """Generate text using OpenAI Chat Completions API."""
+
         try:
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt},
-                ],
-                max_tokens=500,
-                temperature=0.7,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=300,
             )
 
-            return response["choices"][0]["message"]["content"]
+            return response.choices[0].message.content
 
         except Exception as e:
-            print(f"[API ERROR] {e}")
-            return f"[API ERROR] {str(e)}"
+            return f"[API ERROR]\n{e}"
