@@ -177,7 +177,7 @@ You will see:
 Everything saves automatically to:
 
 * `last_results.json`
-* `data/results/`
+
 
 ---
 
